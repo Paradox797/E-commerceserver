@@ -86,31 +86,45 @@ async function run() {
 
 
 
+        app.put('/update/:email', async (req, res) => {
+            const email = req.query.email;
+            //const user = req.body;
+            const user = { isAdmin: "true" }
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: { user },
+            };
+            const result = await asCollection.updateOne(filter, updateDoc, options);
+            //  const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+            res.send(result);
+        })//new
+
         // app.put('/update', async (req, res) => {
-        //     // const email = req.params.email;
-        //     // const user = req.body;
-        //     const user = { location: "Chittagong" }
-        //     const filter = { userID: "vXZlYg8Uj9eKudmrNq7lIbQCQCC3" };
+        //     console.log(req.body);
+        //     const user = req.body;
+        //     const filter = { email: user.email };
         //     const options = { upsert: true };
         //     const updateDoc = {
         //         $set: user,
         //     };
         //     const result = await asCollection.updateOne(filter, updateDoc, options);
-        //     //  const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
         //     res.send({ result });
-        // })//new
+        // })//making one user,
 
-        app.put('/update', async (req, res) => {
-            console.log(req.body);
-            const user = req.body;
-            const filter = { userID: user.userID };
-            const options = { upsert: true };
-            const updateDoc = {
-                $set: user,
-            };
-            const result = await asCollection.updateOne(filter, updateDoc, options);
-            res.send({ result });
-        })//making one user,
+
+
+        app.post('http://localhost:5000/uploadItems', async (req, res) => {
+            const uploadItems = req.body;
+            const query = {};
+            // const exists = await asCollection.findOne(query);
+            // if (exists) {
+            //     return res.send({ success: false, as: exists })
+            // }
+            const result = await servicesCollection.insertOne(uploadItems);
+            res.send({ success: true, result });
+        })
+
 
 
 
